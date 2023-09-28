@@ -67,10 +67,10 @@ for i in "${PACKAGES[@]}"
     done
 
 # install more !
-echo 'phpmyadmin phpmyadmin/app-password-confirm password zanborhipass' | debconf-set-selections
+echo 'phpmyadmin phpmyadmin/app-password-confirm password v2rhipass' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/mysql/admin-pass password zanborhipass' | debconf-set-selections
-echo 'phpmyadmin phpmyadmin/mysql/app-pass password zanborhipass' | debconf-set-selections
+echo 'phpmyadmin phpmyadmin/mysql/admin-pass password v2rhipass' | debconf-set-selections
+echo 'phpmyadmin phpmyadmin/mysql/app-pass password v2rhipass' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/dbconfig-install boolean true' | debconf-set-selections
 sudo apt-get install phpmyadmin -y
 sudo ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
@@ -91,7 +91,7 @@ sudo systemctl start apache2
 ufw allow 'Apache Full'
 sudo systemctl restart apache2
 
-colorized_echo green "Installing Zanbor . . ."
+colorized_echo green "Installing v2r . . ."
 
 sleep 2
 
@@ -108,9 +108,9 @@ sudo systemctl restart apache2.service
 
 wait
 
-git clone https://github.com/ZanborPanel/ZanborPanel.git /var/www/html/ZanborPanelBot
-sudo chmod -R 777 /var/www/html/ZanborPanelBot/
-colorized_echo green "\n\tAll ZanborPanel robot files/folders have been successfully installed on your server!"
+git clone https://github.com/v2rpanel/v2rpanel.git /var/www/html/v2rpanelBot
+sudo chmod -R 777 /var/www/html/v2rpanelBot/
+colorized_echo green "\n\tAll v2rpanel robot files/folders have been successfully installed on your server!"
 
 wait
 
@@ -194,7 +194,7 @@ fi
 wait
 sleep 2
 
-config_address="/var/www/html/ZanborPanelBot/install/zanbor.install"
+config_address="/var/www/html/v2rpanelBot/install/v2r.install"
 
 if [ -f "$config_address" ]; then
     rm "$config_address"
@@ -206,11 +206,11 @@ colorized_echo green "[+] Please wait . . .\n"
 sleep 1
 
 # add information to file
-# touch('/var/www/html/ZanborPanelBot/install/zanbor.install')
-echo "{\"development\":\"@ZanborPanel\",\"install_location\":\"server\",\"main_domin\":\"${DOMAIN}\",\"token\":\"${TOKEN}\",\"dev\":\"${CHAT_ID}\",\"db_name\":\"${dbname}\",\"db_username\":\"${randdbdb}\",\"db_password\":\"${randdbpass}\"}" > /var/www/html/ZanborPanelBot/install/zanbor.install
+# touch('/var/www/html/v2rpanelBot/install/v2r.install')
+echo "{\"development\":\"@v2rpanel\",\"install_location\":\"server\",\"main_domin\":\"${DOMAIN}\",\"token\":\"${TOKEN}\",\"dev\":\"${CHAT_ID}\",\"db_name\":\"${dbname}\",\"db_username\":\"${randdbdb}\",\"db_password\":\"${randdbpass}\"}" > /var/www/html/v2rpanelBot/install/v2r.install
 
-source_file="/var/www/html/ZanborPanelBot/config.php"
-destination_file="/var/www/html/ZanborPanelBot/config.php.tmp"
+source_file="/var/www/html/v2rpanelBot/config.php"
+destination_file="/var/www/html/v2rpanelBot/config.php.tmp"
 replace=$(cat "$source_file" | sed -e "s/\[\*TOKEN\*\]/${TOKEN}/g" -e "s/\[\*DEV\*\]/${CHAT_ID}/g" -e "s/\[\*DB-NAME\*\]/${dbname}/g" -e "s/\[\*DB-USER\*\]/${dbuser}/g" -e "s/\[\*DB-PASS\*\]/${dbpass}/g")
 echo "$replace" > "$destination_file"
 mv "$destination_file" "$source_file"
@@ -219,17 +219,17 @@ sleep 2
 
 # curl process
 colorized_echo blue "Database Status:"
-curl --location "https://${DOMAIN}/ZanborPanelBot/sql/sql.php?db_password=${dbpass}&db_name=${dbname}&db_username=${dbuser}"
+curl --location "https://${DOMAIN}/v2rpanelBot/sql/sql.php?db_password=${dbpass}&db_name=${dbname}&db_username=${dbuser}"
 
 colorized_echo blue "\n\nSet Webhook Status:"
-curl -F "url=https://${DOMAIN}/ZanborPanelBot/index.php" "https://api.telegram.org/bot${TOKEN}/setWebhook"
+curl -F "url=https://${DOMAIN}/v2rpanelBot/index.php" "https://api.telegram.org/bot${TOKEN}/setWebhook"
 
 colorized_echo blue "\n\nSend Message Status:"
-TEXT_MESSAGE="✅ The ZanborPanel Bot Has Been Successfully Installed !"
+TEXT_MESSAGE="✅ The v2rpanel Bot Has Been Successfully Installed !"
 curl -s -X POST "https://api.telegram.org/bot${TOKEN}/sendMessage" -d chat_id="${CHAT_ID}" -d text="${TEXT_MESSAGE}"
 echo -e "\n\n"
 
 sleep 1
-colorized_echo green "[+] The ZanborPanel Bot Has Been Successfully Installed"
-colorized_echo green "[+] Telegram channel: @ZanborPanel || Telegram group: @ZanborPanelGap"
+colorized_echo green "[+] The v2rpanel Bot Has Been Successfully Installed"
+colorized_echo green "[+] Telegram channel: @v2rpanel || Telegram group: @v2rpanelGap"
 echo -e "\n"
